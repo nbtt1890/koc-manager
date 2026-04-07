@@ -148,10 +148,39 @@ tfoot .eval-sticky-stt,tfoot .eval-sticky-name{background:#0f172a;z-index:3}
 .chart-card h4{font-size:14px;font-weight:600;color:var(--text-dim);margin-bottom:16px;text-transform:uppercase;letter-spacing:.3px}
 .chart-card.full{grid-column:1/-1}
 .chart-container{position:relative;height:300px}
+/* Login gate */
+.login-gate{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center}
+.login-gate.hidden{display:none}
+.login-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:380px;max-width:90vw;box-shadow:var(--shadow);text-align:center}
+.login-box .login-logo{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-light),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.login-box .login-sub{font-size:12px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:32px}
+.login-box .login-icon{font-size:48px;margin-bottom:20px;opacity:.6}
+.login-box input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:var(--font);font-size:15px;text-align:center;letter-spacing:2px;transition:var(--transition);margin-bottom:16px}
+.login-box input:focus{outline:none;border-color:var(--border-focus);box-shadow:0 0 0 3px var(--accent-glow)}
+.login-box .login-btn{width:100%;padding:12px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.login-box .login-btn:hover{background:#2563eb}
+.login-box .login-error{color:var(--red);font-size:13px;margin-top:12px;display:none}
+.app-wrap{display:none}
+.app-wrap.visible{display:block}
+
 @media(max-width:768px){.header{padding:0 16px}.main{padding:16px}.tab-bar{padding:8px 16px}.toolbar{flex-direction:column;align-items:stretch}.search-box input{width:100%}.modal{padding:20px}.form-row{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}.commission-tiers{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
+<!-- LOGIN GATE -->
+<div class="login-gate" id="loginGate">
+  <div class="login-box">
+    <div class="login-icon">🔐</div>
+    <div class="login-logo">KOC Manager</div>
+    <div class="login-sub">Comme Studio</div>
+    <input type="password" id="loginPwInput" placeholder="Nhập mật khẩu để truy cập..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Truy cập</button>
+    <div class="login-error" id="loginError">Sai mật khẩu, thử lại!</div>
+  </div>
+</div>
+
+<!-- APP (hidden until login) -->
+<div class="app-wrap" id="appWrap">
 <div class="header">
   <div class="header-left"><div><div class="logo">KOC Manager</div><div class="logo-sub">Comme Studio</div></div></div>
   <div class="header-right"><div class="admin-badge locked" id="adminBadge" onclick="toggleAdmin()"><span id="adminIcon">🔒</span><span id="adminText">Chỉ xem</span></div></div>
@@ -199,14 +228,33 @@ tfoot .eval-sticky-stt,tfoot .eval-sticky-name{background:#0f172a;z-index:3}
 <div class="modal-overlay" id="kocModal"><div class="modal"><h3 id="kocModalTitle">Thêm KOC mới</h3><input type="hidden" id="kocEditId"><div class="form-row"><div class="form-group"><label>Tên KOC *</label><input type="text" id="kocName" placeholder="Nhập tên..."></div><div class="form-group"><label>Số điện thoại</label><input type="tel" id="kocPhone" placeholder="0xxx xxx xxx"></div></div><div class="form-row"><div class="form-group"><label>Ngày tham gia</label><input type="date" id="kocJoinDate"></div><div class="form-group"><label>TikTok username</label><input type="text" id="kocTiktok" placeholder="@username"></div></div><div class="form-group"><label>Thưởng đơn hàng đầu tiên</label><div class="toggle-group"><div class="toggle-opt" onclick="selectBonus(true)" id="bonusYes">Đã nhận ✓</div><div class="toggle-opt selected" onclick="selectBonus(false)" id="bonusNo">Chưa</div></div></div><div class="form-group"><label>Ghi chú</label><textarea id="kocNote" placeholder="Ghi chú thêm..."></textarea></div><div class="form-actions"><button class="btn btn-ghost" onclick="closeKocModal()">Hủy</button><button class="btn btn-primary" onclick="saveKoc()">Lưu</button></div></div></div>
 <div class="modal-overlay" id="adminModal"><div class="modal" style="width:360px"><h3>🔐 Nhập mật khẩu Admin</h3><div class="form-group"><label>Mật khẩu</label><input type="password" id="adminPwInput" placeholder="••••••" onkeydown="if(event.key==='Enter')checkAdmin()"></div><div class="form-actions"><button class="btn btn-ghost" onclick="closeAdminModal()">Hủy</button><button class="btn btn-primary" onclick="checkAdmin()">Xác nhận</button></div></div></div>
 <div class="modal-overlay" id="deleteModal"><div class="modal" style="width:400px"><h3>⚠️ Xác nhận xóa</h3><p style="color:var(--text-dim);font-size:14px;margin-bottom:20px" id="deleteMsg"></p><div class="form-actions"><button class="btn btn-ghost" onclick="closeDeleteModal()">Hủy</button><button class="btn btn-danger" onclick="confirmDelete()">Xóa</button></div></div></div>
+</div><!-- end app-wrap -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const FIREBASE_URL='https://comme-studio-default-rtdb.asia-southeast1.firebasedatabase.app';
+const FIREBASE_URL='';
 const DB_ROOT='/koc-manager';
-const ADMIN_PASSWORD='comme2025';
+const ADMIN_PASSWORD='Commestudio@2026';
+const VIEW_PASSWORD='Commestudio@2026'; // Mật khẩu để xem — đổi khác ADMIN_PASSWORD nếu muốn tách quyền xem/sửa
 const TIERS=[{min:0,max:1e9,rate:.30},{min:1e9,max:2e9,rate:.35},{min:2e9,max:5e9,rate:.40},{min:5e9,max:Infinity,rate:.45}];
 let isAdmin=false,kocList={},evalData={},commData={},deleteTarget=null,bonusValue=false,charts={};
+
+// Login gate
+function doLogin(){
+  const pw=document.getElementById('loginPwInput').value;
+  if(pw===VIEW_PASSWORD||pw===ADMIN_PASSWORD){
+    document.getElementById('loginGate').classList.add('hidden');
+    document.getElementById('appWrap').classList.add('visible');
+    if(pw===ADMIN_PASSWORD){isAdmin=true;updateAdminUI()}
+    init();
+  }else{
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('loginPwInput').value='';
+    document.getElementById('loginPwInput').focus();
+  }
+}
+// Auto-focus login input
+document.addEventListener('DOMContentLoaded',()=>document.getElementById('loginPwInput').focus());
 
 async function fbGet(p){if(!FIREBASE_URL)return null;try{const r=await fetch(`${FIREBASE_URL}${DB_ROOT}${p}.json`);return await r.json()}catch(e){return null}}
 async function fbSet(p,d){if(!FIREBASE_URL){toast('Chưa cấu hình Firebase','error');return false}try{await fetch(`${FIREBASE_URL}${DB_ROOT}${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return true}catch(e){toast('Lỗi lưu','error');return false}}
@@ -474,7 +522,7 @@ function fmtMoney(n){if(!n||n===0)return'0₫';return n.toLocaleString('vi-VN')+
 // Rút gọn cho trục biểu đồ
 function fmtS(n){if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(0)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n}
 
-init();
+// init() is called after successful login
 </script>
 </body>
 </html>
