@@ -189,6 +189,7 @@ tfoot .eval-sticky-stt,tfoot .eval-sticky-name{background:#0f172a;z-index:3}
   <button class="tab-btn active" onclick="switchTab('profiles')">👤 Hồ sơ KOC</button>
   <button class="tab-btn" onclick="switchTab('evaluation')">📊 Đánh giá tháng</button>
   <button class="tab-btn" onclick="switchTab('commission')">💰 Hoa hồng</button>
+  <button class="tab-btn" onclick="switchTab('metrics')">📋 Chỉ số KOC</button>
   <button class="tab-btn" onclick="switchTab('dashboard')">📈 Dashboard</button>
 </div>
 <div class="main">
@@ -200,16 +201,35 @@ tfoot .eval-sticky-stt,tfoot .eval-sticky-name{background:#0f172a;z-index:3}
   </div>
   <!-- TAB 2 -->
   <div class="tab-content" id="tab-evaluation">
-    <div class="toolbar"><div class="toolbar-left"><div class="month-selector"><span style="font-size:13px;color:var(--text-dim);font-weight:600">Tháng</span><select id="evalMonth" onchange="renderEvaluation()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><span style="font-size:13px;color:var(--text-dim);font-weight:600">Năm</span><input type="number" id="evalYear" value="2026" min="2025" max="2030" style="width:80px" onchange="renderEvaluation()"></div></div><div class="toolbar-right"><button class="btn btn-ghost btn-sm" onclick="exportEvalCSV()">📥 Xuất CSV</button></div></div>
+    <div class="toolbar"><div class="toolbar-left"><div class="month-selector"><span style="font-size:13px;color:var(--text-dim);font-weight:600">Tháng</span><select id="evalMonth" onchange="renderEvaluation()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><span style="font-size:13px;color:var(--text-dim);font-weight:600">Năm</span><input type="number" id="evalYear" value="2026" min="2025" max="2030" style="width:80px" onchange="renderEvaluation()"></div></div><div class="toolbar-right"><button class="btn btn-ghost btn-sm" id="btnSyncEval" onclick="syncEvalFromTikTok()">🔄 Đồng bộ TikTok</button><button class="btn btn-primary btn-sm" id="btnSaveEval" onclick="saveEvalDirty()" disabled>💾 Lưu thay đổi</button><button class="btn btn-ghost btn-sm" onclick="exportEvalCSV()">📥 Xuất CSV</button></div></div>
     <div class="stats-row" id="evalStats"></div>
     <div class="table-wrap"><div class="table-scroll"><table id="evalTable"><thead><tr id="evalGroupRow"></tr><tr id="evalHeaderRow"></tr></thead><tbody id="evalTableBody"></tbody><tfoot id="evalTableFoot"></tfoot></table></div></div>
   </div>
   <!-- TAB 3 -->
   <div class="tab-content" id="tab-commission">
     <div class="commission-tiers"><div class="tier-card"><div class="tier-range">Dưới 1 tỷ</div><div class="tier-pct" style="color:#94a3b8">30%</div></div><div class="tier-card"><div class="tier-range">1 tỷ — dưới 2 tỷ</div><div class="tier-pct" style="color:var(--accent-light)">35%</div></div><div class="tier-card"><div class="tier-range">2 tỷ — dưới 5 tỷ</div><div class="tier-pct" style="color:var(--orange)">40%</div></div><div class="tier-card"><div class="tier-range">Từ 5 tỷ</div><div class="tier-pct" style="color:var(--green)">45%</div></div></div>
-    <div class="toolbar"><div class="toolbar-left"><div class="month-selector"><span style="font-size:13px;color:var(--text-dim);font-weight:600">Tháng</span><select id="commMonth" onchange="renderCommission()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><span style="font-size:13px;color:var(--text-dim);font-weight:600">Năm</span><input type="number" id="commYear" value="2026" min="2025" max="2030" style="width:80px" onchange="renderCommission()"></div></div><div class="toolbar-right"><button class="btn btn-ghost btn-sm" onclick="exportCommCSV()">📥 Xuất CSV</button></div></div>
+    <div class="toolbar"><div class="toolbar-left"><div class="month-selector"><span style="font-size:13px;color:var(--text-dim);font-weight:600">Tháng</span><select id="commMonth" onchange="renderCommission()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><span style="font-size:13px;color:var(--text-dim);font-weight:600">Năm</span><input type="number" id="commYear" value="2026" min="2025" max="2030" style="width:80px" onchange="renderCommission()"></div></div><div class="toolbar-right"><button class="btn btn-ghost btn-sm" id="btnSyncComm" onclick="syncCommFromTikTok()">🔄 Đồng bộ TikTok</button><button class="btn btn-primary btn-sm" id="btnSaveComm" onclick="saveCommDirty()" disabled>💾 Lưu thay đổi</button><button class="btn btn-ghost btn-sm" onclick="exportCommCSV()">📥 Xuất CSV</button></div></div>
     <div class="stats-row" id="commStats"></div>
     <div class="table-wrap"><div class="table-scroll"><table><thead><tr id="commGroupRow"></tr><tr id="commHeaderRow"></tr></thead><tbody id="commTableBody"></tbody><tfoot id="commTableFoot"></tfoot></table></div></div>
+  </div>
+  <!-- TAB METRICS (Chỉ số KOC) -->
+  <div class="tab-content" id="tab-metrics">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="month-selector">
+          <span style="font-size:13px;color:var(--text-dim);font-weight:600">Tháng</span>
+          <select id="metricsMonth" onchange="renderMetricsTab()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+          <span style="font-size:13px;color:var(--text-dim);font-weight:600">Năm</span>
+          <input type="number" id="metricsYear" value="2026" min="2026" max="2030" style="width:80px" onchange="renderMetricsTab()">
+        </div>
+        <span id="metricsSourceBadge" style="font-size:11px;padding:4px 10px;border-radius:10px;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)">—</span>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-ghost btn-sm" id="btnMetricsRefresh" onclick="refreshMetrics()">🔄 Làm mới từ TikTok</button>
+      </div>
+    </div>
+    <div class="stats-row" id="metricsStats"></div>
+    <div class="table-wrap"><div class="table-scroll"><table id="metricsTable"><thead><tr><th class="center">#</th><th>KOC</th><th>TikTok handle</th><th class="center">GMV</th><th class="center">Hoa hồng</th><th class="center">Đơn hàng</th><th class="center">View tổng</th><th class="center">Số video</th></tr></thead><tbody id="metricsTableBody"></tbody><tfoot id="metricsTableFoot"></tfoot></table></div></div>
   </div>
   <!-- TAB 4 -->
   <div class="tab-content" id="tab-dashboard">
@@ -237,7 +257,19 @@ const DB_ROOT='/koc-manager';
 const ADMIN_PASSWORD='Commestudio@2026';
 const VIEW_PASSWORD='Commestudio@2026'; // Mật khẩu để xem — đổi khác ADMIN_PASSWORD nếu muốn tách quyền xem/sửa
 const TIERS=[{min:0,max:1e9,rate:.30},{min:1e9,max:2e9,rate:.35},{min:2e9,max:5e9,rate:.40},{min:5e9,max:Infinity,rate:.45}];
+
+// === TIKTOK METRICS INTEGRATION ===
+// URL Azure Function (paste sau khi deploy, ví dụ: https://<your-func>.azurewebsites.net/api/kocExport)
+const AZURE_FN_URL='https://ttsync-cye8cahubhh2e5az.southeastasia-01.azurewebsites.net/api/kocExport';
+const FIRESTORE_PROJECT='cm-cc-c39ee';
+const FIRESTORE_BASE=`https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT}/databases/(default)/documents`;
+const MIN_METRICS_MONTH='2026-01';
+
 let isAdmin=false,kocList={},evalData={},commData={},deleteTarget=null,bonusValue=false,charts={};
+let kocMetrics={};      // { '2026-04': {month, summary, rows, generatedAt, _source: 'cache'|'live'} }
+let evalDirty=false;    // pending changes after sync, chờ user bấm Lưu
+let commDirty=false;
+let metricsLoading=false;
 
 // Login gate
 function doLogin(){
@@ -264,6 +296,7 @@ async function init(){
   const n=new Date(),m=n.getMonth()+1,y=n.getFullYear();
   document.getElementById('evalMonth').value=m;document.getElementById('evalYear').value=y;
   document.getElementById('commMonth').value=m;document.getElementById('commYear').value=y;
+  document.getElementById('metricsMonth').value=m;document.getElementById('metricsYear').value=y;
   document.getElementById('dashFromMonth').value=1;document.getElementById('dashToMonth').value=m;document.getElementById('dashYear').value=y;
   if(!FIREBASE_URL){toast('⚠️ Chưa cấu hình Firebase — chế độ demo','error');loadDemo()}else{await loadData()}
   renderProfiles();renderEvaluation();renderCommission();
@@ -276,8 +309,8 @@ function checkAdmin(){if(document.getElementById('adminPwInput').value===ADMIN_P
 function closeAdminModal(){document.getElementById('adminModal').classList.remove('show');document.getElementById('adminPwInput').value=''}
 function updateAdminUI(){const b=document.getElementById('adminBadge');if(isAdmin){b.className='admin-badge unlocked';document.getElementById('adminIcon').textContent='🔓';document.getElementById('adminText').textContent='Admin';document.getElementById('btnAddKoc').disabled=false}else{b.className='admin-badge locked';document.getElementById('adminIcon').textContent='🔒';document.getElementById('adminText').textContent='Chỉ xem';document.getElementById('btnAddKoc').disabled=true}renderProfiles();renderEvaluation();renderCommission()}
 
-const TABS=['profiles','evaluation','commission','dashboard'];
-function switchTab(t){document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===t));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById(`tab-${t}`).classList.add('active');if(t==='evaluation')renderEvaluation();if(t==='commission')renderCommission();if(t==='dashboard')renderDashboard()}
+const TABS=['profiles','evaluation','commission','metrics','dashboard'];
+function switchTab(t){document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===t));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById(`tab-${t}`).classList.add('active');if(t==='evaluation')renderEvaluation();if(t==='commission')renderCommission();if(t==='metrics')renderMetricsTab();if(t==='dashboard')renderDashboard()}
 
 // === PROFILES ===
 function renderProfiles(){
@@ -448,6 +481,13 @@ async function saveEF(el){
   const key=getEK();
   if(!evalData[key])evalData[key]={};if(!evalData[key][kid])evalData[key][kid]={};
   evalData[key][kid][f]=v===''?'':+v;
+  if(evalDirty){
+    // Pending mode after sync — don't autosave; mark Save button enabled and refresh UI
+    document.getElementById('btnSaveEval').disabled=false;
+    renderEvaluation();
+    setTimeout(()=>{const e=document.querySelector(`input[data-k="${kid}"][data-f="${f}"]`);if(e)e.focus()},50);
+    return;
+  }
   const tk=`${key}-${kid}`;clearTimeout(eTimers[tk]);
   eTimers[tk]=setTimeout(async()=>{if(FIREBASE_URL)await fbSet(`/evaluations/${key}/${kid}`,evalData[key][kid])},800);
   renderEvaluation();
@@ -483,7 +523,14 @@ function renderCommission(){
   document.getElementById('commTableFoot').innerHTML=`<tr style="background:#0f172a;font-weight:600"><td colspan="2" style="text-align:center;color:var(--text-dim);font-size:12px;text-transform:uppercase;padding:12px 16px">Tổng</td><td style="text-align:center;font-family:var(--mono);color:var(--purple);padding:12px">${fmtMoney(tE)}</td><td style="padding:12px"></td><td style="text-align:center;font-family:var(--mono);color:var(--purple);padding:12px">${fmtMoney(tKS)}</td><td colspan="4" style="padding:12px"></td></tr>`;
 }
 let cTimers={};
-async function saveCF(el){const kid=el.dataset.k,f=el.dataset.f;const v=f==='note'?el.value:(el.value.trim()===''?'':+el.value);const key=getCK();if(!commData[key])commData[key]={};if(!commData[key][kid])commData[key][kid]={};commData[key][kid][f]=v;const tk=`${key}-${kid}`;clearTimeout(cTimers[tk]);cTimers[tk]=setTimeout(async()=>{if(FIREBASE_URL)await fbSet(`/commissions/${key}/${kid}`,commData[key][kid])},800);renderCommission();setTimeout(()=>{const e=document.querySelector(`input[data-k="${kid}"][data-f="${f}"][data-t="c"]`);if(e)e.focus()},50)}
+async function saveCF(el){const kid=el.dataset.k,f=el.dataset.f;const v=f==='note'?el.value:(el.value.trim()===''?'':+el.value);const key=getCK();if(!commData[key])commData[key]={};if(!commData[key][kid])commData[key][kid]={};commData[key][kid][f]=v;
+  if(commDirty){
+    document.getElementById('btnSaveComm').disabled=false;
+    renderCommission();
+    setTimeout(()=>{const e=document.querySelector(`input[data-k="${kid}"][data-f="${f}"][data-t="c"]`);if(e)e.focus()},50);
+    return;
+  }
+  const tk=`${key}-${kid}`;clearTimeout(cTimers[tk]);cTimers[tk]=setTimeout(async()=>{if(FIREBASE_URL)await fbSet(`/commissions/${key}/${kid}`,commData[key][kid])},800);renderCommission();setTimeout(()=>{const e=document.querySelector(`input[data-k="${kid}"][data-f="${f}"][data-t="c"]`);if(e)e.focus()},50)}
 async function togPaid(kid){if(!isAdmin)return;const key=getCK();if(!commData[key])commData[key]={};if(!commData[key][kid])commData[key][kid]={};commData[key][kid].prevPaid=!commData[key][kid].prevPaid;if(FIREBASE_URL)await fbSet(`/commissions/${key}/${kid}`,commData[key][kid]);renderCommission();toast(commData[key][kid].prevPaid?'Đã đánh dấu trả ✓':'Chuyển về chờ trả','success')}
 
 // === DASHBOARD ===
@@ -507,6 +554,247 @@ function renderDashboard(){
   charts.c=new Chart(document.getElementById('chartGmvTrend'),{type:'line',data:{labels:mLabels,datasets:ke.map(([id,koc],ci)=>({label:koc.name,data:months.map(mk=>+evalData[mk]?.[id]?.gmv||0),borderColor:clrs[ci%clrs.length],tension:.3,fill:false,pointRadius:4}))},options:{...cOpts,scales:{...cOpts.scales,y:{...cOpts.scales.y,ticks:{...cOpts.scales.y.ticks,callback:v=>fmtS(v)}}}}});
   charts.d=new Chart(document.getElementById('chartViewsTrend'),{type:'line',data:{labels:mLabels,datasets:ke.map(([id,koc],ci)=>({label:koc.name,data:months.map(mk=>+evalData[mk]?.[id]?.views||0),borderColor:clrs[ci%clrs.length],tension:.3,fill:false,pointRadius:4}))},options:cOpts});
   charts.e=new Chart(document.getElementById('chartCommTrend'),{type:'bar',data:{labels:mLabels,datasets:ke.map(([id,koc],ci)=>({label:koc.name,data:months.map(mk=>{const e=+commData[mk]?.[id]?.earned||0;return e*getTier(e).rate}),backgroundColor:clrs[ci%clrs.length]+'99',borderColor:clrs[ci%clrs.length],borderWidth:1}))},options:{...cOpts,scales:{...cOpts.scales,x:{...cOpts.scales.x,stacked:true},y:{...cOpts.scales.y,stacked:true,ticks:{...cOpts.scales.y.ticks,callback:v=>fmtS(v)}}}}});
+}
+
+// === TIKTOK METRICS INTEGRATION ===
+function getMK(){return`${document.getElementById('metricsYear').value}-${String(document.getElementById('metricsMonth').value).padStart(2,'0')}`}
+
+// Firestore REST helpers (anonymous read/write enabled on collection `dt`)
+function toFsValue(v){
+  if(v===null||v===undefined)return{nullValue:null};
+  if(typeof v==='boolean')return{booleanValue:v};
+  if(typeof v==='number'){return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}}
+  if(typeof v==='string')return{stringValue:v};
+  if(Array.isArray(v))return{arrayValue:{values:v.map(toFsValue)}};
+  if(typeof v==='object')return{mapValue:{fields:toFsFields(v)}};
+  return{stringValue:String(v)};
+}
+function toFsFields(obj){const f={};for(const k in obj)f[k]=toFsValue(obj[k]);return f}
+function fromFsValue(v){
+  if(!v||typeof v!=='object')return null;
+  if('stringValue'in v)return v.stringValue;
+  if('integerValue'in v)return parseInt(v.integerValue,10);
+  if('doubleValue'in v)return Number(v.doubleValue);
+  if('booleanValue'in v)return v.booleanValue;
+  if('nullValue'in v)return null;
+  if('timestampValue'in v)return v.timestampValue;
+  if('arrayValue'in v)return(v.arrayValue.values||[]).map(fromFsValue);
+  if('mapValue'in v)return fromFsFields(v.mapValue.fields||{});
+  return null;
+}
+function fromFsFields(fields){const o={};for(const k in fields)o[k]=fromFsValue(fields[k]);return o}
+
+async function fsGetMonth(ym){
+  try{
+    const r=await fetch(`${FIRESTORE_BASE}/dt/${ym}`);
+    if(r.status===404)return null;
+    if(!r.ok)return null;
+    const j=await r.json();
+    if(!j.fields)return null;
+    return fromFsFields(j.fields);
+  }catch(e){console.error('fsGetMonth',e);return null}
+}
+async function fsSetMonth(ym,data){
+  try{
+    const r=await fetch(`${FIRESTORE_BASE}/dt/${ym}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:toFsFields(data)})});
+    return r.ok;
+  }catch(e){console.error('fsSetMonth',e);return false}
+}
+
+// Load metrics for month: prefer cache unless force=true
+async function loadMonthMetrics(ym,force=false){
+  if(metricsLoading)return null;
+  metricsLoading=true;
+  try{
+    if(!force){
+      const cached=await fsGetMonth(ym);
+      if(cached&&cached.rows){cached._source='cache';kocMetrics[ym]=cached;return cached}
+    }
+    if(!AZURE_FN_URL){toast('⚠️ Chưa cấu hình AZURE_FN_URL trong index.html','error');return null}
+    const r=await fetch(`${AZURE_FN_URL}?month=${ym}`);
+    if(!r.ok){
+      let msg=`HTTP ${r.status}`;try{const j=await r.json();if(j.message)msg=j.message;else if(j.error)msg=j.error}catch(_){}
+      toast('Lỗi gọi TikTok: '+msg,'error');
+      return null;
+    }
+    const data=await r.json();
+    if(!data||!Array.isArray(data.rows)){toast('Dữ liệu TikTok không hợp lệ','error');return null}
+    data._source='live';
+    await fsSetMonth(ym,{month:data.month,start:data.start,end:data.end,generatedAt:data.generatedAt,summary:data.summary,rows:data.rows});
+    kocMetrics[ym]=data;
+    return data;
+  }catch(e){console.error(e);toast('Lỗi: '+(e.message||e),'error');return null}
+  finally{metricsLoading=false}
+}
+
+// Normalize tiktok handle for matching
+function normHandle(s){return(s||'').toString().trim().toLowerCase().replace(/^@+/,'').replace(/^https?:\/\/[^/]+\//,'').replace(/\/+$/,'').split('?')[0].split('/').pop()}
+
+function findMetricRow(metrics,koc){
+  if(!metrics||!metrics.rows)return null;
+  const h=normHandle(koc.tiktok);
+  if(!h)return null;
+  return metrics.rows.find(r=>normHandle(r.creator)===h)||null;
+}
+
+// === Metrics Tab rendering ===
+async function renderMetricsTab(){
+  const ym=getMK();
+  if(ym<MIN_METRICS_MONTH){toast(`Tháng tối thiểu là ${MIN_METRICS_MONTH}`,'error');return}
+  document.getElementById('metricsSourceBadge').textContent='Đang tải...';
+  document.getElementById('metricsTableBody').innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="icon">⏳</div><h4>Đang tải dữ liệu tháng ${ym}...</h4></div></td></tr>`;
+  const data=await loadMonthMetrics(ym,false);
+  drawMetricsTab(ym,data);
+}
+async function refreshMetrics(){
+  const ym=getMK();
+  if(ym<MIN_METRICS_MONTH){toast(`Tháng tối thiểu là ${MIN_METRICS_MONTH}`,'error');return}
+  const btn=document.getElementById('btnMetricsRefresh');btn.disabled=true;btn.textContent='⏳ Đang tải...';
+  document.getElementById('metricsSourceBadge').textContent='Đang gọi TikTok...';
+  const data=await loadMonthMetrics(ym,true);
+  btn.disabled=false;btn.textContent='🔄 Làm mới từ TikTok';
+  if(data)toast('Đã cập nhật dữ liệu TikTok ✓','success');
+  drawMetricsTab(ym,data);
+}
+function drawMetricsTab(ym,data){
+  const badge=document.getElementById('metricsSourceBadge');
+  const stats=document.getElementById('metricsStats');
+  const tb=document.getElementById('metricsTableBody');
+  const tf=document.getElementById('metricsTableFoot');
+  if(!data){
+    badge.textContent='Chưa có dữ liệu';
+    stats.innerHTML='';tf.innerHTML='';
+    tb.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="icon">📋</div><h4>Chưa có dữ liệu cho tháng ${ym}</h4><div style="font-size:13px;margin-top:8px;color:var(--text-muted)">Bấm "Làm mới từ TikTok" để tải lần đầu</div></div></td></tr>`;
+    return;
+  }
+  const ts=data.generatedAt?new Date(data.generatedAt).toLocaleString('vi-VN'):'';
+  badge.innerHTML=data._source==='cache'?`💾 Cache · ${ts}`:`⚡ Live · ${ts}`;
+  badge.style.color=data._source==='cache'?'var(--accent-light)':'var(--green)';
+  const s=data.summary||{gmv:0,commission:0,orders:0,views:0,videos:0};
+  stats.innerHTML=`
+    <div class="stat-card"><div class="stat-label">Tổng GMV</div><div class="stat-value green">${fmtMoney(s.gmv)}</div></div>
+    <div class="stat-card"><div class="stat-label">Tổng Hoa hồng</div><div class="stat-value purple">${fmtMoney(s.commission)}</div></div>
+    <div class="stat-card"><div class="stat-label">Tổng Đơn hàng</div><div class="stat-value orange">${(s.orders||0).toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Tổng View</div><div class="stat-value blue">${(s.views||0).toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Tổng Video</div><div class="stat-value blue">${(s.videos||0).toLocaleString()}</div></div>`;
+
+  // Build per-KOC view (KOCs first, then unmapped creators)
+  const ke=Object.entries(kocList).sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  const usedCreators=new Set();
+  const matched=ke.map(([id,koc])=>{
+    const row=findMetricRow(data,koc);
+    if(row)usedCreators.add(normHandle(row.creator));
+    return{kocName:koc.name,handle:koc.tiktok||'—',row,mapped:!!row};
+  });
+  const unmapped=(data.rows||[]).filter(r=>!usedCreators.has(normHandle(r.creator))).map(r=>({kocName:'<span style="color:var(--text-muted);font-style:italic">Chưa map</span>',handle:'@'+r.creator,row:r,mapped:false,isOrphan:true}));
+  const all=[...matched,...unmapped];
+
+  if(!all.length){
+    tb.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="icon">📋</div><h4>Chưa có KOC</h4></div></td></tr>`;
+    tf.innerHTML='';
+    return;
+  }
+  let tG=0,tC=0,tO=0,tV=0,tVid=0;
+  tb.innerHTML=all.map((it,i)=>{
+    const r=it.row;
+    if(!r){return`<tr style="opacity:.55"><td class="col-stt">${i+1}</td><td class="col-name">${esc(it.kocName)}</td><td class="col-tiktok" style="font-size:12px">${esc(it.handle)}</td><td colspan="5" style="text-align:center;color:var(--text-muted);font-size:12px">— Không có dữ liệu TikTok —</td></tr>`}
+    tG+=r.gmv||0;tC+=r.commission||0;tO+=r.orders||0;tV+=r.views||0;tVid+=r.videos||0;
+    const nameCell=it.isOrphan?it.kocName:esc(it.kocName);
+    return`<tr><td class="col-stt">${i+1}</td><td class="col-name">${nameCell}</td><td class="col-tiktok" style="font-size:12px">${esc(it.handle)}</td>
+      <td class="eval-computed" style="color:var(--green)">${fmtMoney(r.gmv||0)}</td>
+      <td class="eval-computed" style="color:var(--purple)">${fmtMoney(r.commission||0)}</td>
+      <td class="eval-computed">${(r.orders||0).toLocaleString()}</td>
+      <td class="eval-computed">${(r.views||0).toLocaleString()}</td>
+      <td class="eval-computed">${(r.videos||0).toLocaleString()}</td></tr>`;
+  }).join('');
+  tf.innerHTML=`<tr style="background:#0f172a;font-weight:600">
+    <td colspan="3" style="text-align:right;color:var(--text-dim);font-size:11px;text-transform:uppercase;padding:12px 14px">Tổng</td>
+    <td class="eval-computed" style="color:var(--green);padding:12px">${fmtMoney(tG)}</td>
+    <td class="eval-computed" style="color:var(--purple);padding:12px">${fmtMoney(tC)}</td>
+    <td class="eval-computed" style="padding:12px">${tO.toLocaleString()}</td>
+    <td class="eval-computed" style="padding:12px">${tV.toLocaleString()}</td>
+    <td class="eval-computed" style="padding:12px">${tVid.toLocaleString()}</td></tr>`;
+}
+
+// === Sync from TikTok into Evaluation tab (no autosave; user must click Lưu) ===
+async function syncEvalFromTikTok(){
+  const ym=getEK();
+  if(ym<MIN_METRICS_MONTH){toast(`Tháng tối thiểu là ${MIN_METRICS_MONTH}`,'error');return}
+  if(!isAdmin){toast('Cần quyền Admin','error');return}
+  const btn=document.getElementById('btnSyncEval');btn.disabled=true;btn.textContent='⏳ Đang đồng bộ...';
+  let data=kocMetrics[ym];
+  if(!data){data=await loadMonthMetrics(ym,false)}
+  btn.disabled=false;btn.textContent='🔄 Đồng bộ TikTok';
+  if(!data){return}
+  if(!evalData[ym])evalData[ym]={};
+  let matched=0,total=0;
+  Object.entries(kocList).forEach(([kid,koc])=>{
+    total++;
+    const row=findMetricRow(data,koc);
+    if(!row)return;
+    if(!evalData[ym][kid])evalData[ym][kid]={};
+    evalData[ym][kid].gmv=row.gmv||0;
+    evalData[ym][kid].orders=row.orders||0;
+    evalData[ym][kid].views=row.views||0;
+    evalData[ym][kid].videos=row.videos||0;
+    matched++;
+  });
+  evalDirty=true;
+  document.getElementById('btnSaveEval').disabled=false;
+  renderEvaluation();
+  toast(`Đã đồng bộ ${matched}/${total} KOC. Bấm "Lưu thay đổi" để xác nhận.`,'success');
+}
+async function saveEvalDirty(){
+  if(!evalDirty)return;
+  if(!isAdmin){toast('Cần quyền Admin','error');return}
+  const ym=getEK();
+  const btn=document.getElementById('btnSaveEval');btn.disabled=true;btn.textContent='⏳ Đang lưu...';
+  const ents=Object.entries(evalData[ym]||{});
+  if(FIREBASE_URL){
+    await Promise.all(ents.map(([kid,d])=>fbSet(`/evaluations/${ym}/${kid}`,d)));
+  }
+  evalDirty=false;
+  btn.textContent='💾 Lưu thay đổi';btn.disabled=true;
+  toast(`Đã lưu ${ents.length} bản ghi ✓`,'success');
+}
+
+// === Sync from TikTok into Commission tab ===
+async function syncCommFromTikTok(){
+  const ym=getCK();
+  if(ym<MIN_METRICS_MONTH){toast(`Tháng tối thiểu là ${MIN_METRICS_MONTH}`,'error');return}
+  if(!isAdmin){toast('Cần quyền Admin','error');return}
+  const btn=document.getElementById('btnSyncComm');btn.disabled=true;btn.textContent='⏳ Đang đồng bộ...';
+  let data=kocMetrics[ym];
+  if(!data){data=await loadMonthMetrics(ym,false)}
+  btn.disabled=false;btn.textContent='🔄 Đồng bộ TikTok';
+  if(!data){return}
+  if(!commData[ym])commData[ym]={};
+  let matched=0,total=0;
+  Object.entries(kocList).forEach(([kid,koc])=>{
+    total++;
+    const row=findMetricRow(data,koc);
+    if(!row)return;
+    if(!commData[ym][kid])commData[ym][kid]={};
+    commData[ym][kid].earned=row.commission||0;
+    matched++;
+  });
+  commDirty=true;
+  document.getElementById('btnSaveComm').disabled=false;
+  renderCommission();
+  toast(`Đã đồng bộ ${matched}/${total} KOC. Bấm "Lưu thay đổi" để xác nhận.`,'success');
+}
+async function saveCommDirty(){
+  if(!commDirty)return;
+  if(!isAdmin){toast('Cần quyền Admin','error');return}
+  const ym=getCK();
+  const btn=document.getElementById('btnSaveComm');btn.disabled=true;btn.textContent='⏳ Đang lưu...';
+  const ents=Object.entries(commData[ym]||{});
+  if(FIREBASE_URL){
+    await Promise.all(ents.map(([kid,d])=>fbSet(`/commissions/${ym}/${kid}`,d)));
+  }
+  commDirty=false;
+  btn.textContent='💾 Lưu thay đổi';btn.disabled=true;
+  toast(`Đã lưu ${ents.length} bản ghi ✓`,'success');
 }
 
 // === EXPORT ===
